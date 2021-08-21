@@ -39,23 +39,18 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
 	private void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		Map<String, BeanPostProcessor> beanPostProcessorMap = beanFactory.getBeansOfType(BeanPostProcessor.class);
-		beanPostProcessorMap.forEach((s, beanPostProcessor) -> {
-			beanFactory.addBeanPostProcessor(beanPostProcessor);
-		});
+		beanPostProcessorMap.forEach((s, beanPostProcessor) -> beanFactory.addBeanPostProcessor(beanPostProcessor));
 	}
 
 	private void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
-		beanFactoryPostProcessorMap.forEach((s, beanFactoryPostProcessor) -> {
-			beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
-		});
+		beanFactoryPostProcessorMap.forEach((s, beanFactoryPostProcessor) -> beanFactoryPostProcessor.postProcessBeanFactory(beanFactory));
 
 	}
 
 	protected abstract ConfigurableListableBeanFactory getBeanFactory();
 
 	protected abstract void refreshBeanFactory();
-
 
 	@Override
 	public <T> Map<String, T> getBeansOfType(Class<T> type) throws BeansException {
