@@ -10,7 +10,6 @@ import org.junit.Test;
  **/
 public class ApiTest {
 
-
 	@Test
 	public void xmlTest() {
 		// 1.初始化 BeanFactory
@@ -22,7 +21,6 @@ public class ApiTest {
 		String result = userService.queryUserInfo();
 		System.out.println("测试结果：" + result);
 	}
-
 
 	@Test
 	public void hookTest() {
