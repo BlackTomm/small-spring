@@ -15,10 +15,10 @@ public class ClassPathResource implements Resource {
 
 	private final String path;
 
-	private final ClassLoader classLoader;
+	private ClassLoader classLoader;
 
 	public ClassPathResource(String path) {
-		this(path, null);
+		this(path, (ClassLoader) null);
 	}
 
 	public ClassPathResource(String path, ClassLoader classLoader) {
