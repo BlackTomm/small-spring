@@ -1,6 +1,7 @@
 package com.code.springframework.beans.factory.support;
 
 import com.code.springframework.beans.BeansException;
+import com.code.springframework.beans.factory.FactoryBean;
 import com.code.springframework.beans.factory.config.BeanDefinition;
 import com.code.springframework.beans.factory.config.BeanPostProcessor;
 import com.code.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -13,8 +14,11 @@ import java.util.List;
  * Description: BeanDefinition 注册表接口
  * Create by blacktom on 2021/08/14
  **/
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
-	/** ClassLoader to resolve bean class names with, if necessary */
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
+
+	/**
+	 * ClassLoader to resolve bean class names with, if necessary
+	 */
 	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
 	/**
@@ -38,12 +42,32 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 	}
 
 	protected <T> T doGetBean(final String name, final Object[] args) {
-		Object bean = getSingleton(name);
-		if (bean != null) {
-			return (T) bean;
+		Object sharedInstance = getSingleton(name);
+		//首先判断是否为空，如果不是FactoryBean直接返回单例 bean，是则获取 object
+		if (sharedInstance != null) {
+			// 如果是 FactoryBean，则需要调用 FactoryBean#getObject
+			return (T) getObjectForBeanInstance(sharedInstance, name);
 		}
+
+		//为空，则需要创建 bean，同时也需要注册FactoryBean
 		BeanDefinition beanDefinition = getBeanDefinition(name);
-		return (T) createBean(name, beanDefinition, args);
+		Object bean = createBean(name, beanDefinition, args);
+		return (T) getObjectForBeanInstance(bean, name);
+	}
+
+	private Object getObjectForBeanInstance(Object beanInstance, String beanName) {
+		if (!(beanInstance instanceof FactoryBean)) {
+			return beanInstance;
+		}
+
+		Object object = getCachedObjectForFactoryBean(beanName);
+
+		if (object == null) {
+			FactoryBean<?> factoryBean = (FactoryBean<?>) beanInstance;
+			object = getObjectFromFactoryBean(factoryBean, beanName);
+		}
+
+		return object;
 	}
 
 	protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;

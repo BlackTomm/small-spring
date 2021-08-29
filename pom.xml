@@ -26,7 +26,8 @@
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
-                <version>3.1</version>
+                <version>3.3.0</version>
+<!--                <version>3.1</version>-->
             </dependency>
 
             <!--属性装配-->
@@ -34,6 +35,14 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>5.5.0</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.openjdk.jol/jol-cli -->
+            <!--使用JOL来分析java的对象布局-->
+            <dependency>
+                <groupId>org.openjdk.jol</groupId>
+                <artifactId>jol-cli</artifactId>
+                <version>0.14</version>
             </dependency>
 
             <!--测试-->
