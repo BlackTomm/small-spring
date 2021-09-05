@@ -1,5 +1,7 @@
 package com.code.springframework.beans;
 
+import java.util.Random;
+
 /**
  * Description:
  * Create by blacktom on 2021/08/22
@@ -15,7 +17,23 @@ public class UserService implements IUserService {
 	private UserDao userDao;
 
 	public String queryUserInfo() {
-		return userDao.queryUserName(uId) + "," + company + "," + location;
+		try {
+			Thread.sleep(new Random(1).nextInt(100));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return "jim，100001，深圳";
+//		return userDao.queryUserName(uId) + "," + company + "," + location;
+	}
+
+	@Override
+	public String register(String userName) {
+		try {
+			Thread.sleep(new Random(1).nextInt(100));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return "注册用户：" + userName + " success！";
 	}
 
 	public String getuId() {
