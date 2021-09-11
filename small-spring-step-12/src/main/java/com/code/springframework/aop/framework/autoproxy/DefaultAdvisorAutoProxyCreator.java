@@ -28,12 +28,16 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-		if(isInfrastructureClass(beanClass)) return null;
+		if (isInfrastructureClass(beanClass)) {
+			return null;
+		}
 
-		Collection<AspectJExpressionPointcutAdvisor> advisors  = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+		Collection<AspectJExpressionPointcutAdvisor> advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
 		for (AspectJExpressionPointcutAdvisor advisor : advisors) {
-			ClassFilter classFilter= advisor.getPointcut().getClassFilter();
-			if(!classFilter.matches(beanClass)) continue;
+			ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+			if (!classFilter.matches(beanClass)) {
+				continue;
+			}
 
 			AdvisedSupport advisedSupport = new AdvisedSupport();
 			TargetSource targetSource = null;

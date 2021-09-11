@@ -12,7 +12,7 @@ import org.junit.Test;
 public class ApiTest {
 
 	@Test
-	public void test_BeanFactory(){
+	public void test_BeanFactory() {
 		// 1.初始化 BeanFactory
 		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
@@ -23,10 +23,12 @@ public class ApiTest {
 		// 3.第一次获取 bean
 		UserService userService = (UserService) beanFactory.getBean("userService");
 		userService.queryUserInfo();
+		System.out.println("第一次获取：" + userService);
 
 		// 4.第二次获取 bean from Singleton
 		UserService userService_singleton = (UserService) beanFactory.getBean("userService");
 		userService_singleton.queryUserInfo();
+		System.out.println("第二次获取：" + userService);
 	}
 
 }
