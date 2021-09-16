@@ -41,16 +41,39 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
 	@Override
 	public Object getSingleton(String beanName) {
-		return singletonObjects.get(beanName);
+		Object singletonObject = singletonObjects.get(beanName);
+		if (null == singletonObject) {
+			singletonObject = earlySingletonObjects.get(beanName);
+			// 判断二级缓存中是否有对象，这个对象就是代理对象，因为只有代理对象才会放到三级缓存中
+			if (null == singletonObject) {
+				ObjectFactory<?> singletonFactory = singletonFactories.get(beanName);
+				if (singletonFactory != null) {
+					singletonObject = singletonFactory.getObject();
+					// 把三级缓存中的代理对象中的真实对象获取出来，放入二级缓存中
+					earlySingletonObjects.put(beanName, singletonObject);
+					singletonFactories.remove(beanName);
+				}
+			}
+		}
+		return singletonObject;
 	}
 
 	protected void addSingleton(String beanName, Object singletonObject) {
 		singletonObjects.put(beanName, singletonObject);
 	}
 
+	protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory){
+		if (!this.singletonObjects.containsKey(beanName)) {
+			this.singletonFactories.put(beanName, singletonFactory);
+			this.earlySingletonObjects.remove(beanName);
+		}
+	}
+
 	@Override
 	public void registerSingleton(String beanName, Object singletonObject) {
 		singletonObjects.put(beanName, singletonObject);
+		earlySingletonObjects.remove(beanName);
+		singletonFactories.remove(beanName);
 	}
 
 	public void registerDisposableBean(String beanName, DisposableBean bean) {
